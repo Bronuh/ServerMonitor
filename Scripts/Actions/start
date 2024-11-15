@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 if [ ! -f ".env" ]; then
   echo ".env file not found! Exiting..."
@@ -9,4 +9,4 @@ fi
 SERVICE_NAME="$1"
 . "./Scripts/Services/$SERVICE_NAME"
 
-"docker compose" "$COMPOSE_TARGETS" "up -d" 
+docker compose "$COMPOSE_TARGETS" up -d

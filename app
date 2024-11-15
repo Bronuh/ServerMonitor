@@ -6,7 +6,6 @@ if [[ -z "$1" ]]; then
     echo "Available services:"
     find ./Scripts/Services -maxdepth 1 -type f -exec basename {} \;
     echo ""
-    echo ""
     echo "Available actions:"
     find ./Scripts/Actions -maxdepth 1 -type f -exec basename {} \;
     exit 1
