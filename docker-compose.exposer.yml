@@ -1,0 +1,9 @@
+﻿services:
+  bh-exposer:
+    image: bh-exposer
+    build:
+      context: .
+      dockerfile: LocalStatusChecker/Dockerfile
+    ports:
+      - "${EXPORT_PORT}:80"
+    restart: unless-stopped

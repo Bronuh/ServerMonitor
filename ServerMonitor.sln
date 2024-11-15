@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerMonitor", "ServerMonitor\ServerMonitor.csproj", "{DACA03EC-181B-4CFE-8AC4-3B8CFDFB819A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatusExposer", "StatusExposer\StatusExposer.csproj", "{C8234423-F2AE-4089-AA57-FE14F2A550E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2BEC889-5912-461C-A57B-BB3D25A7705F}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.exposer.yml = docker-compose.exposer.yml
+		docker-compose.monitor.yml = docker-compose.monitor.yml
+		.env.template = .env.template
+		app = app
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{651DC60B-27C6-4A76-A487-5DE007A17B81}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DACA03EC-181B-4CFE-8AC4-3B8CFDFB819A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DACA03EC-181B-4CFE-8AC4-3B8CFDFB819A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DACA03EC-181B-4CFE-8AC4-3B8CFDFB819A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DACA03EC-181B-4CFE-8AC4-3B8CFDFB819A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8234423-F2AE-4089-AA57-FE14F2A550E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8234423-F2AE-4089-AA57-FE14F2A550E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8234423-F2AE-4089-AA57-FE14F2A550E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8234423-F2AE-4089-AA57-FE14F2A550E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{651DC60B-27C6-4A76-A487-5DE007A17B81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{651DC60B-27C6-4A76-A487-5DE007A17B81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{651DC60B-27C6-4A76-A487-5DE007A17B81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{651DC60B-27C6-4A76-A487-5DE007A17B81}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

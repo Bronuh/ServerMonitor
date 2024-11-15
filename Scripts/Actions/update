@@ -1,0 +1,12 @@
+﻿#!/bin/bash
+
+# Extract the service name
+SERVICE_NAME="$1"
+. "./Scripts/Services/$SERVICE_NAME"
+
+"docker compose" "$COMPOSE_TARGETS" "down"
+
+git fetch
+git pull
+
+"docker compose" "$COMPOSE_TARGETS" "up -d" 
