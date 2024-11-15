@@ -73,8 +73,9 @@ class Program
             Console.WriteLine($"Server response status: {response.StatusCode}");
             return response.IsSuccessStatusCode;
         }
-        catch
+        catch(Exception ex)
         {
+            Console.WriteLine($"Checking server status at {serverUrl} errored: {ex.Message}");
             return false;
         }
     }
