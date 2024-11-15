@@ -6,7 +6,9 @@
       dockerfile: ServerMonitor/Dockerfile
     environment:
       SERVER_URL: "${SERVER_URL}"
+      DO_PING_CHECK: "${DO_PING_CHECK}"
       PING_TARGET: "${PING_TARGET}"
+      PING_ATTEMPTS: "${PING_ATTEMPTS}"
       CHECK_INTERVAL: "${CHECK_INTERVAL}"
       TELEGRAM_TOKEN: "${TELEGRAM_TOKEN}"
       TELEGRAM_CHAT_ID: "${TELEGRAM_CHAT_ID}"

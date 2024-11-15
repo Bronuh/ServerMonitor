@@ -1,5 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 using Microsoft.Extensions.Configuration;
+using ServerMonitor.Notifiers;
 
 namespace ServerMonitor;
 
@@ -8,13 +9,17 @@ class Program
     private static HttpClient client = new HttpClient();
     private static string serverUrl;
     private static int checkInterval;
-    private static string telegramToken;
-    private static string telegramChatId;
-    private static string pingTarget;
     
     private static bool serverWasAvailable = true;
     private static bool networkWasAvailable = true;
+    private static bool pingEnabled;
+    private static string pingTarget;
+    private static int pingAttempts;
+    private static int failedAttempts = 0;
     
+    private static string telegramToken;
+    private static string telegramChatId;
+    private static INotifier notifier;
     static async Task Main(string[] args)
     {
         var config = new ConfigurationBuilder()
@@ -22,10 +27,16 @@ class Program
             .Build();
 
         serverUrl = config["SERVER_URL"];
-        checkInterval = int.Parse(config["CHECK_INTERVAL"] ?? "10");
+        checkInterval = Int32.Parse(config["CHECK_INTERVAL"] ?? "10");
         telegramToken = config["TELEGRAM_TOKEN"];
         telegramChatId = config["TELEGRAM_CHAT_ID"];
+        
+        pingEnabled = Boolean.Parse(config["PING_ENABLED"] ?? "true");
         pingTarget = config["PING_TARGET"];
+        pingAttempts = Int32.Parse(config["PING_ATTEMPTS"] ?? "3");
+        
+
+        notifier = new TelegramNotifier(telegramToken, telegramChatId);
         
         while (true)
         {
@@ -33,32 +44,43 @@ class Program
             bool isServerAvailable = await CheckServerAvailability();
             Console.WriteLine($"Remote availability:\n Network: {isNetworkAvailable}\n Server: {isServerAvailable}");
             
+            // http success after fail
             if (isServerAvailable && !serverWasAvailable)
             {
                 Console.WriteLine($"Server {serverUrl} is available. Sending notification.");
-                await SendTelegramMessage($"✅ [{GetTime()}] Домашний сервер доступен снова.");
+                await SendTelegramMessage($"✅🖥 [{GetTime()}] Домашний сервер доступен снова.");
             }
             
+            // http fail after success
             else if (!isServerAvailable && serverWasAvailable)
             {
                 Console.WriteLine($"Server {serverUrl} is NOT available. Sending notification.");
-                await SendTelegramMessage($"⚠️ [{GetTime()}] Домашний сервер недоступен.");
+                await SendTelegramMessage($"⚠️🖥 [{GetTime()}] Домашний сервер недоступен.");
             }
 
+            // ping success after fail event
             if (isNetworkAvailable && !networkWasAvailable)
             {
                 Console.WriteLine($"Network {serverUrl} is available. Sending notification.");
-                await SendTelegramMessage($"✅ [{GetTime()}] Домашняя сеть доступна");
+                networkWasAvailable = true;
+                failedAttempts = 0;
+                await SendTelegramMessage($"✅🌐 [{GetTime()}] Домашняя сеть доступна");
             }
 
+            // ping fail after success event
             if (!isNetworkAvailable && networkWasAvailable)
             {
-                Console.WriteLine($"Network {serverUrl} is NOT available. Sending notification.");
-                await SendTelegramMessage($"⚠️ [{GetTime()}] Домашняя сеть недоступна");
+                failedAttempts++;
+                if (failedAttempts >= pingAttempts)
+                {
+                    Console.WriteLine($"Network {serverUrl} is NOT available. Sending notification.");
+                    await SendTelegramMessage($"⚠️🌐 [{GetTime()}] Домашняя сеть недоступна");
+                    networkWasAvailable = isNetworkAvailable;
+                    networkWasAvailable = false;
+                }
             }
             
             serverWasAvailable = isServerAvailable;
-            networkWasAvailable = isNetworkAvailable;
 
             Thread.Sleep(checkInterval * 1000);
         }
@@ -112,13 +134,7 @@ class Program
 
     static async Task SendTelegramMessage(string message)
     {
-        var url = $"https://api.telegram.org/bot{telegramToken}/sendMessage";
-        var content = new FormUrlEncodedContent(new []
-        {
-            new KeyValuePair<string, string>("chat_id", telegramChatId),
-            new KeyValuePair<string, string>("text", message)
-        });
-        await client.PostAsync(url, content);
+        await notifier.SendMessageAsync(message);
     }
 
     static string GetTime()
