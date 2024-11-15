@@ -4,6 +4,7 @@
 SERVICE_NAME="$1"
 . "./Scripts/Services/$SERVICE_NAME"
 
+echo "Running docker compose $COMPOSE_TARGETS down"
 docker compose "$COMPOSE_TARGETS" down
 
 git fetch
@@ -14,4 +15,5 @@ if [ ! -f ".env" ]; then
   exit 1
 fi
 
+echo "Running docker compose $COMPOSE_TARGETS up -d"
 docker compose "$COMPOSE_TARGETS" up -d
