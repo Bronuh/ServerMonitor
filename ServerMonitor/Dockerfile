@@ -1,4 +1,6 @@
 ﻿FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
+# Install system dependencies, including ping
+RUN apt-get update && apt-get install -y iputils-ping
 USER $APP_UID
 WORKDIR /app
 
