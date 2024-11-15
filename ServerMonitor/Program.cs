@@ -34,21 +34,25 @@ class Program
             
             if (isServerAvailable && !serverWasAvailable)
             {
+                Console.WriteLine($"Server {serverUrl} is available. Sending notification.");
                 await SendTelegramMessage($"✅ [{GetTime()}] Домашний сервер доступен снова.");
             }
             
             else if (!isServerAvailable && serverWasAvailable)
             {
+                Console.WriteLine($"Server {serverUrl} is NOT available. Sending notification.");
                 await SendTelegramMessage($"⚠️ [{GetTime()}] Домашний сервер недоступен.");
             }
 
             if (isNetworkAvailable && !networkWasAvailable)
             {
+                Console.WriteLine($"Network {serverUrl} is available. Sending notification.");
                 await SendTelegramMessage($"✅ [{GetTime()}] Домашняя сеть доступна");
             }
 
             if (!isNetworkAvailable && networkWasAvailable)
             {
+                Console.WriteLine($"Network {serverUrl} is NOT available. Sending notification.");
                 await SendTelegramMessage($"⚠️ [{GetTime()}] Домашняя сеть недоступна");
             }
             
