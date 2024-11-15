@@ -16,4 +16,4 @@ if [ ! -f ".env" ]; then
 fi
 
 echo "Running docker compose $COMPOSE_TARGETS up -d"
-docker compose "$COMPOSE_TARGETS" up -d
+docker compose $COMPOSE_TARGETS up -d
