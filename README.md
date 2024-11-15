@@ -1,63 +1,63 @@
-# Система мониторинга нестабильных серверов, завернутая в Docker
-> Почему ты не можешь просто работать?
+# Unstable Server Monitoring System Wrapped in Docker
+> Why can't you just work?
 
-Костыль, написанный мной для мониторинга моего нестабильного сервера. Для работает требует наличия еще одного сервера, но стабильного.
-Состоит из двух частей:
-- **Exposer** - часть для нестабильного сервера, отвечающая за предоставлении данных для монитора.
-- **Monitor** - часть для стабильного сервера, отвечающая за проверку состояния нестабильного сервера и отправку уведомлений в Telegram.
+A quick fix written by me to monitor my unstable server. It requires an additional, but stable, server to function.
+The system consists of two parts:
+- **Exposer** - the component for the unstable server, responsible for providing data to the monitor.
+- **Monitor** - the component for the stable server, responsible for checking the status of the unstable server and sending notifications to Telegram.
 
 > [!NOTE]
-> Прежде чем начать пользоваться решением необходимо создать бота в [@BotFather](https://t.me/botfather) а также получить свой `chat_id` в [@userinfobot](https://t.me/userinfobot).
-> После создания бота необходимо запустить его командой `/start` в беседе с ним.
-> Также для работы на обеих системах требуется **Docker** с **Compose**.
+> Before using the solution, you need to create a bot using [@BotFather](https://t.me/botfather) and also obtain your `chat_id` from [@userinfobot](https://t.me/userinfobot).
+> After creating the bot, you must start it by sending the `/start` command in a chat with it.
+> Additionally, **Docker** with **Compose** is required on both systems.
 
-## Подготовка к работе
-1. необходимо склонировать репозиторий в удобное место на обеих машинах.
+## Getting Started
+1. Clone the repository to a convenient location on both machines.
 ```bash
 git clone https://github.com/Bronuh/ServerMonitor.git
 ```
-2. перейти в директорию репозитория
+2. Navigate to the repository directory
 ```bash
 cd ServerMonitor/
 ```
-3. рекомендуется заранее подготовить *.env* файл 
+3. It is recommended to prepare the *.env* file in advance
 ```bash
 cp .env.template .env
 ```
 
-## Установка и настройка **Exposer** на нестабильном сервере
-Перед запуском желательно сконфигурировать порт для Exposer в *.env* файле.
-Для запуска **Exposer** достаточно выполнить команду внутри директории репозитория:
+## Installing and Configuring **Exposer** on the Unstable Server
+Before running, it is advisable to configure the port for Exposer in the *.env* file.
+To start **Exposer**, simply run the following command inside the repository directory:
 ```bash
 ./app exposer start
 ```
-После сборки и запуска он будет доступен по адресу `http://localhost:5015/online`
-В данный момент он не возвращает ничего кроме пустого ответа со статусом 200 OK.
+After building and starting, it will be accessible at `http://localhost:5015/online`
+Currently, it does not return anything except an empty response with a status of 200 OK.
 
-## Установка и настройка Monitor на стабильном сервере
-Перед запуском **НЕОБХОДИМО** сконфигурировать сервис в *.env* файле
-- **SERVER_URL** - должен указывать на любой HTTP эндпоинт на нестабильном сервере, который вернет 200 OK.
-  - Именно это делает **Exposer**.
-- **PING_TARGET** - должен указывать на нестабильный сервер или основной сетевой шлюз сети, в которой он находится.
-- **CHECK_INTERVAL** - интервал проверок, в секундах.
-- **TELEGRAM_TOKEN** - токен вашего Telegram бота.
-- **TELEGRAM_CHAT_ID** - chat_id пользователя, которому будут отправляться уведомления о состоянии сервера и сети.
+## Installing and Configuring Monitor on the Stable Server
+Before starting, it is **REQUIRED** to configure the service in the *.env* file
+- **SERVER_URL** - should point to any HTTP endpoint on the unstable server that returns 200 OK.
+  - This is exactly what **Exposer** does.
+- **PING_TARGET** - should point to the unstable server or the main network gateway of the network in which it is located.
+- **CHECK_INTERVAL** - the check interval, in seconds.
+- **TELEGRAM_TOKEN** - your Telegram bot token.
+- **TELEGRAM_CHAT_ID** - the chat_id of the user who will receive notifications about the server and network status.
 
-Для запуска **Exposer** достаточно выполнить команду внутри директории репозитория:
+To start **Monitor**, simply run the following command inside the repository directory:
 ```bash
 ./app monitor start
 ```
 
-## Работа с ./app
-Файл `./app` позволяет легче управлять сервисами с репозитории. Обычный вызов `./app` без аргументов выведет список доступных сервисов и действий над ними.
-Синтаксис команды: `./app <service> <action> [args]`
-На данный момент доступны сервисы:
+## Working with ./app
+The `./app` file makes it easier to manage services within the repository. A basic call to `./app` without arguments will display a list of available services and actions for them.
+Command syntax: `./app <service> <action> [args]`
+Currently available services:
 - exposer
 - monitor
-- all - для отладки, запускает оба сервиса
+- all - for debugging, starts both services
 
-Действия:
-- start - запускает сервис
-- stop - останавливает сервис
-- restart - перезапускает сервис. Ключ --hard также удалит существующий образ сервиса.
-- update - остановит сервис, удалит существующий образ, выполнит `git pull` и запустит сервис
+Actions:
+- start - starts the service
+- stop - stops the service
+- restart - restarts the service. The --hard flag will also remove the existing service image.
+- update - stops the service, removes the existing image, runs `git pull`, and starts the service
