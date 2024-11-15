@@ -1,1 +1,1 @@
-COMPOSE_TARGETS="-f docker-compose.monitor.yml -f docker-compose.exposer.yml"
+COMPOSE_TARGETS="-f ./docker-compose.monitor.yml -f ./docker-compose.exposer.yml"
