@@ -5,7 +5,7 @@
       context: .
       dockerfile: ServerMonitor/Dockerfile
     environment:
-      SERVER_URL: "${EXPORT_PORT}"
+      SERVER_URL: "${SERVER_URL}"
       PING_TARGET: "${PING_TARGET}"
       CHECK_INTERVAL: "${CHECK_INTERVAL}"
       TELEGRAM_TOKEN: "${TELEGRAM_TOKEN}"
