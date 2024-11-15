@@ -5,4 +5,4 @@ SERVICE_NAME="$1"
 . "./Scripts/Services/$SERVICE_NAME"
 
 echo "Running docker compose $COMPOSE_TARGETS down"
-docker compose "$COMPOSE_TARGETS" down
+docker compose $COMPOSE_TARGETS down
