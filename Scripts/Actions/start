@@ -1,5 +1,10 @@
 ﻿#!/bin/bash
 
+if [ ! -f ".env" ]; then
+  echo ".env file not found! Exiting..."
+  exit 1
+fi
+
 # Extract the service name
 SERVICE_NAME="$1"
 . "./Scripts/Services/$SERVICE_NAME"

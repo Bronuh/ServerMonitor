@@ -9,4 +9,9 @@ SERVICE_NAME="$1"
 git fetch
 git pull
 
+if [ ! -f ".env" ]; then
+  echo ".env file not found! Exiting..."
+  exit 1
+fi
+
 "docker compose" "$COMPOSE_TARGETS" "up -d" 
