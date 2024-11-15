@@ -31,6 +31,7 @@ class Program
         {
             bool isNetworkAvailable = await PingRemoteGate();
             bool isServerAvailable = await CheckServerAvailability();
+            Console.WriteLine($"Remote availability:\n Network: {isNetworkAvailable}\n Server: {isServerAvailable}");
             
             if (isServerAvailable && !serverWasAvailable)
             {
@@ -67,7 +68,9 @@ class Program
     {
         try
         {
+            Console.WriteLine($"Checking server status at {serverUrl}");
             HttpResponseMessage response = await client.GetAsync(serverUrl);
+            Console.WriteLine($"Server response status: {response.StatusCode}");
             return response.IsSuccessStatusCode;
         }
         catch
