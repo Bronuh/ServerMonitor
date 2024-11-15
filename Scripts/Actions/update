@@ -6,6 +6,7 @@ SERVICE_NAME="$1"
 
 echo "Running docker compose $COMPOSE_TARGETS down"
 docker compose "$COMPOSE_TARGETS" down
+docker rmi $TARGET_IMAGE
 
 git fetch
 git pull

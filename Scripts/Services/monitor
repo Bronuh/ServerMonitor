@@ -1,1 +1,2 @@
 COMPOSE_TARGETS="-f ./docker-compose.monitor.yml"
+TARGET_IMAGE="bh-monitor"
