@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [ ! -f ".env" ]; then
-  echo ".env file not found! Exiting..."
+  cp ./.env.template .env
+  echo ".env file not found and copied from .env.template! Configure it before start!"
   exit 1
 fi
 
