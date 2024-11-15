@@ -6,17 +6,17 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["LocalStatusChecker/LocalStatusChecker.csproj", "LocalStatusChecker/"]
-RUN dotnet restore "LocalStatusChecker/LocalStatusChecker.csproj"
+COPY ["StatusExposer/StatusExposer.csproj", "StatusExposer/"]
+RUN dotnet restore "StatusExposer/StatusExposer.csproj"
 COPY . .
-WORKDIR "/src/LocalStatusChecker"
-RUN dotnet build "LocalStatusChecker.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/StatusExposer"
+RUN dotnet build "StatusExposer.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "LocalStatusChecker.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "StatusExposer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "LocalStatusChecker.dll"]
+ENTRYPOINT ["dotnet", "StatusExposer.dll"]
