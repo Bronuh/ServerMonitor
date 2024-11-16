@@ -40,9 +40,7 @@ class Program
         
         while (true)
         {
-            bool isNetworkAvailable = await PingRemoteGate();
             bool isServerAvailable = await CheckServerAvailability();
-            Console.WriteLine($"Remote availability:\n Network: {isNetworkAvailable}\n Server: {isServerAvailable}");
             
             // http success after fail
             if (isServerAvailable && !serverWasAvailable)
@@ -58,28 +56,37 @@ class Program
                 await SendTelegramMessage($"⚠️🖥 [{GetTime()}] Домашний сервер недоступен.");
             }
 
-            // ping success after fail event
-            if (isNetworkAvailable && !networkWasAvailable)
+            bool isNetworkAvailable = false;
+            if (pingEnabled)
             {
-                Console.WriteLine($"Network {serverUrl} is available. Sending notification.");
-                networkWasAvailable = true;
-                failedAttempts = 0;
-                await SendTelegramMessage($"✅🌐 [{GetTime()}] Домашняя сеть доступна");
-            }
-
-            // ping fail after success event
-            if (!isNetworkAvailable && networkWasAvailable)
-            {
-                failedAttempts++;
-                if (failedAttempts >= pingAttempts)
+                isNetworkAvailable = await PingRemoteGate();
+                // ping success after fail event
+                if (isNetworkAvailable && !networkWasAvailable)
                 {
-                    Console.WriteLine($"Network {serverUrl} is NOT available. Sending notification.");
-                    await SendTelegramMessage($"⚠️🌐 [{GetTime()}] Домашняя сеть недоступна");
-                    networkWasAvailable = isNetworkAvailable;
-                    networkWasAvailable = false;
+                    Console.WriteLine($"Network {serverUrl} is available. Sending notification.");
+                    networkWasAvailable = true;
+                    failedAttempts = 0;
+                    await SendTelegramMessage($"✅🌐 [{GetTime()}] Домашняя сеть доступна");
+                }
+
+                // ping fail after success event
+                if (!isNetworkAvailable && networkWasAvailable)
+                {
+                    failedAttempts++;
+                    if (failedAttempts >= pingAttempts)
+                    {
+                        Console.WriteLine($"Network {serverUrl} is NOT available. Sending notification.");
+                        await SendTelegramMessage($"⚠️🌐 [{GetTime()}] Домашняя сеть недоступна");
+                        networkWasAvailable = isNetworkAvailable;
+                        networkWasAvailable = false;
+                    }
                 }
             }
             
+            
+            Console.WriteLine($"Remote availability:\n " +
+                              $"Server: {isServerAvailable} " +
+                              $"{(pingEnabled ? $"\n Network: {isNetworkAvailable}" : "")}"); // only show network if ping is enabled
             serverWasAvailable = isServerAvailable;
 
             Thread.Sleep(checkInterval * 1000);
@@ -90,9 +97,9 @@ class Program
     {
         try
         {
-            Console.WriteLine($"Checking server status at {serverUrl}");
+            //Console.WriteLine($"Checking server status at {serverUrl}");
             HttpResponseMessage response = await client.GetAsync(serverUrl);
-            Console.WriteLine($"Server response status: {response.StatusCode}");
+            //Console.WriteLine($"Server response status: {response.StatusCode}");
             return response.IsSuccessStatusCode;
         }
         catch(Exception ex)
@@ -111,11 +118,7 @@ class Program
                 PingReply reply = await ping.SendPingAsync(pingTarget, 1000); // 1000ms timeout
                 if (reply.Status == IPStatus.Success)
                 {
-                    Console.WriteLine($"Ping to {pingTarget} successful:");
-                    Console.WriteLine($"  Address: {reply.Address}");
-                    Console.WriteLine($"  RoundTrip time: {reply.RoundtripTime} ms");
-                    Console.WriteLine($"  Time to live: {reply.Options?.Ttl}");
-                    Console.WriteLine($"  Buffer size: {reply.Buffer.Length}");
+                    Console.WriteLine($"Ping to {pingTarget} successful: delay {reply.RoundtripTime}ms, TTL {reply.Options?.Ttl}");
                     return true;
                 }
                 else
