@@ -31,12 +31,17 @@ class Program
         telegramToken = config["TELEGRAM_TOKEN"];
         telegramChatId = config["TELEGRAM_CHAT_ID"];
         
-        pingEnabled = Boolean.Parse(config["PING_ENABLED"] ?? "true");
+        pingEnabled = Boolean.Parse(config["DO_PING_CHECK"] ?? "true");
         pingTarget = config["PING_TARGET"];
         pingAttempts = Int32.Parse(config["PING_ATTEMPTS"] ?? "3");
-        
 
         notifier = new TelegramNotifier(telegramToken, telegramChatId);
+
+        Console.WriteLine($"Running monitor for server at {serverUrl}.\n" +
+                          $"Interval: {checkInterval}\n" +
+                          $"Ping enabled: {pingEnabled}\n" +
+                          $"Ping target: {pingTarget}\n" +
+                          $"Ping attempts: {pingAttempts}");
         
         while (true)
         {
@@ -73,6 +78,7 @@ class Program
                 if (!isNetworkAvailable && networkWasAvailable)
                 {
                     failedAttempts++;
+                    Console.WriteLine($"$Failed ping {failedAttempts}/{pingAttempts}");
                     if (failedAttempts >= pingAttempts)
                     {
                         Console.WriteLine($"Network {serverUrl} is NOT available. Sending notification.");
