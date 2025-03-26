@@ -1,5 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 using Microsoft.Extensions.Configuration;
+using NtpClient;
 using ServerMonitor.Notifiers;
 
 namespace ServerMonitor;
@@ -148,6 +149,12 @@ class Program
 
     static string GetTime()
     {
-        return $"{DateTime.Now:d.M.yyyy hh:mm:ss}";
+        var connection = new NtpConnection("time.google.com");
+        var utcNow = connection.GetUtc(); 
+        
+        TimeZoneInfo moscowZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Moscow");
+        DateTime moscowTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, moscowZone);
+        
+        return $"{moscowTime:d.M.yyyy hh:mm:ss}";
     }
 }
