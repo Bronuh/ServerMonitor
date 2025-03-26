@@ -155,6 +155,6 @@ class Program
         TimeZoneInfo moscowZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/Moscow");
         DateTime moscowTime = TimeZoneInfo.ConvertTimeFromUtc(utcNow, moscowZone);
         
-        return $"{moscowTime:d.M.yyyy hh:mm:ss}";
+        return $"{moscowTime:d.MM.yyyy HH:mm:ss}";
     }
 }
